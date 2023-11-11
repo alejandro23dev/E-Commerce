@@ -27,7 +27,7 @@
                                                             else echo $product->description; ?></h6>
                     <h1 class="text-center mt-6">$<?php echo $product->price; ?></h1>
                 </div>
-                <?php if ($product->status == 'active') : ?>
+                <?php if ($product->status == 'En Venta') : ?>
                     <div class="mt-5 text-center">
                         <button type="button" class="btn btn-primary shadow btn-buy" data-id="<?php echo $product->id; ?>">Comprar <i class="fa fa-shopping-basket"></i></button>
                     </div>

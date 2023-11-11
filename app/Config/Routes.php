@@ -13,6 +13,7 @@ $routes->post('Client/registerUser', 'Client::registerUser');
 $routes->post('Client/showProductsByCategory', 'Client::showProductsByCategory');
 
 //ADMIN
+#GET
 $routes->get('Admin', 'Authentication::signIn');
 $routes->get('Admin/main', 'Admin::index');
 $routes->get('Admin/showViewProducts', 'Admin::showViewProducts');
@@ -20,12 +21,15 @@ $routes->get('Admin/showViewEmployees', 'Admin::showViewEmployees');
 $routes->get('Admin/showViewSales', 'Admin::showViewSales');
 $routes->get('Admin/showViewSales', 'Admin::showViewSales');
 $routes->get('Admin/showViewCreateProduct', 'Admin::showViewCreateProduct');
+#POST
+$routes->post('Admin/showViewProducts', 'Admin::showViewProducts');
 $routes->post('Admin/createProduct', 'Admin::createProduct');
 $routes->post('Admin/showViewModalCreateCategory', 'Admin::showViewModalCreateCategory');
 $routes->post('Admin/createCategory', 'Admin::createCategory');
 $routes->post('Admin/showViewModalCreateSubCategory', 'Admin::showViewModalCreateSubCategory');
 $routes->post('Admin/createSubCategory', 'Admin::createSubCategory');
-
+$routes->post('Admin/showViewCreateProduct', 'Admin::showViewCreateProduct'); 
+$routes->post('Admin/productActions', 'Admin::productActions');
 
 
 //Authentication

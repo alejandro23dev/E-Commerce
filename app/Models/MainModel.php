@@ -73,6 +73,15 @@ class MainModel extends Model
         return $result;
     }
 
+    public function objDelete($table, $id)
+    {
+        $this->db->table($table)
+            ->where('id', $id)
+            ->delete();
+
+        return $this->resultID;
+    }
+
     public function objCheckDuplicate($table, $field, $value, $id = null)
     {
         $query = $this->db->table($table)

@@ -10,6 +10,7 @@
     <!-- css --->
     <link href="<?php echo base_url('public/assets/plugins/global/plugins.bundle.css'); ?>" rel="stylesheet" type="text/css" />
     <link href="<?php echo base_url('public/assets/css/style.bundle.css'); ?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url('public/assets/plugins/custom/datatables/datatables.bundle.css'); ?>" rel="stylesheet" type="text/css" />
     <!-- js --->
     <script>
         var hostUrl = "<?php echo base_url('public/assets/'); ?>";
@@ -18,6 +19,7 @@
     <script src="<?php echo base_url('public/assets/js/scripts.bundle.js'); ?>"></script>
     <script src="<?php echo base_url('public/assets/plugins/custom/fslightbox/fslightbox.bundle.js'); ?>"></script>
     <script src="<?php echo base_url('public/assets/plugins/custom/typedjs/typedjs.bundle.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/plugins/custom/datatables/datatables.bundle.js'); ?>"></script>
 
     <script>
         function globalError() {
@@ -36,8 +38,10 @@
 </head>
 
 <body>
-    <div id="modal"></div>
     <div class="container">
-        <?php echo view($page); ?>
+        <div id="modal"></div>
+        <div id="view">
+            <?php echo view($page); ?>
+        </div>
     </div>
 </body>

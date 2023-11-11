@@ -54,9 +54,9 @@
                     </div>
                     <div class="card-body pt-0">
                         <select id="sel-status" class="form-select mb-2" data-control="select2" data-hide-search="true" data-placeholder="Seleccione una opción">
-                            <option value="" hidden></option>
-                            <option value="active">En venta</option>
-                            <option value="comingSoon">Pronto en Venta</option>
+                            <option value="<?php echo @$product[0]->status; ?>" hidden><?php echo @$product[0]->status; ?></option>
+                            <option value="En Venta">En Venta</option>
+                            <option value="Pronto en Venta">Pronto en Venta</option>
                         </select>
                         <div class="text-muted fs-7">Seleccione un estado para el producto.</div>
                     </div>
@@ -70,7 +70,7 @@
                     <div class="card-body pt-0">
                         <label class="form-label">Categoría</label>
                         <select id="sel-category" class="form-select mb-2" data-control="select2" data-placeholder="Seleccione una opción">
-                            <option value="" hidden></option>
+                            <option value="<?php echo @$product[0]->categoryID; ?>" hidden><?php echo @$product[0]->categoryID; ?></option>
                             <?php foreach ($categories as $category) : ?>
                                 <option value="<?php echo $category->id ?>"><?php echo $category->name ?></option>
                             <?php endforeach; ?>
@@ -80,7 +80,7 @@
                             <i class="ki-duotone ki-plus fs-2"></i>Crear nueva categoría</a>
                         <label class="form-label">SubCategoría</label>
                         <select id="sel-subCategory" class="form-select mb-2" data-control="select2" data-placeholder="Seleccione una opción">
-                            <option value="" hidden></option>
+                            <option value="<?php echo @$product[0]->subCategoryID; ?>" hidden><?php echo @$product[0]->subcategoryID; ?></option>
                             <?php foreach ($subCategories as $subCategory) : ?>
                                 <option value="<?php echo $subCategory->id ?>"><?php echo $subCategory->name ?></option>
                             <?php endforeach; ?>
@@ -99,12 +99,12 @@
                                 <div class="card-body pt-0">
                                     <div class="mb-10 fv-row">
                                         <label class="form-label">Nombre del Producto</label>
-                                        <input type="text" id="productName" class="form-control mb-2 required focus" placeholder="Nombre del Producto" value="" />
+                                        <input type="text" id="productName" class="form-control mb-2 required focus" placeholder="Nombre del Producto" value="<?php echo @$product[0]->name; ?>" />
                                         <div class="text-muted fs-7">Se recomienda de que el nombre del producto sea único.</div>
                                     </div>
                                     <div>
                                         <label class="form-label">Descripción <span class="text-muted fst-italic">(Opcional)</span></label>
-                                        <textarea id="productDescription" class="form-control mb-2" value=""></textarea>
+                                        <textarea id="productDescription" class="form-control mb-2" ><?php echo @$product[0]->description; ?></textarea>
                                         <div class="text-muted fs-7">Realice una descripción de su producto para mejor visibilidad.</div>
                                     </div>
                                 </div>
@@ -118,7 +118,7 @@
                                 <div class="card-body pt-0">
                                     <div class="mb-10 fv-row">
                                         <label class="form-label">Cantidad del Producto</label>
-                                        <input type="text" id="productQuantity" class="form-control mb-2 required focus number" placeholder="Cantidad del Producto" value="" />
+                                        <input type="text" id="productQuantity" class="form-control mb-2 required focus number" placeholder="Cantidad del Producto" value="<?php echo @$product[0]->quantity; ?>" />
                                         <div class="text-muted fs-7">Escriba la cantidad de su producto.</div>
                                     </div>
                                 </div>
@@ -132,13 +132,20 @@
                                 <div class="card-body pt-0">
                                     <div class="mb-10 fv-row">
                                         <label class="form-label">Precio del Producto</label>
-                                        <input type="text" id="productPrice" class="form-control mb-2 required focus number" placeholder="Precio del Producto" value="" />
+                                        <input type="text" id="productPrice" class="form-control mb-2 required focus number" placeholder="Precio del Producto" value="<?php echo @$product[0]->price; ?>" />
                                         <div class="text-muted fs-7">Escriba el precio de su producto.</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-center">
-                                <button type="button" id="btn-save" class="btn btn-primary shadow rounded">Añadir Nuevo Producto</button>
+                            <div class="text-center justify-content-around row">
+                                <?php if (@$edit) : ?>
+                                    <a href="<?php echo base_url('Admin/showViewProducts'); ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Descartar</a>
+                                    <button type="button" id="btn-update" data-id="<?php echo @$product[0]->id; ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Actualizar Cambios</button>
+                                <?php else : ?>
+                                    <a href="<?php echo base_url('Admin/showViewProducts'); ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Descartar</a>
+                                    <button type="button" id="btn-save" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Añadir Nuevo Producto</button>
+                                <?php endif; ?>
+
                             </div>
                         </div>
                     </div>
@@ -171,6 +178,62 @@
                 $('#modal').html(response);
             }
         });
+    });
+
+    $('#btn-update').on('click', function() {
+        let resultCheckRequiredValues = checkRequiredValues('required');
+        $(this).attr('disabled', true);
+        if (resultCheckRequiredValues == 0) {
+            $.ajax({
+                type: "post",
+                url: "<?php echo base_url('Admin/productActions'); ?>",
+                data: {
+                    'id': $(this).attr('data-id'),
+                    'action': 'update',
+                    'name': $('#productName').val(),
+                    'description': $('#productDescription').val(),
+                    'price': $('#productPrice').val(),
+                    'status': $('#sel-status').val(),
+                    'category': $('#sel-category').val(),
+                    'subCategory': $('#sel-subCategory').val(),
+                    'quantity': $('#productQuantity').val(),
+                },
+                dataType: "json",
+                success: function(response) {
+                    switch (response.error) {
+                        case 0:
+                            Swal.fire({
+                                title: 'Exito',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            setTimeout(function() {
+                                window.location.href = "<?php echo base_url('Admin/showViewProducts'); ?>";
+                            }, 2000);
+
+                            break;
+                    }
+                },
+                error: function(error) {
+                    $('#btn-update').removeAttr('disabled');
+                    Swal.fire({
+                        title: 'Ha ocurrido un error',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            });
+        } else {
+            $('#btn-update').removeAttr('disabled');
+            Swal.fire({
+                title: 'Complete la Información',
+                icon: 'warning',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
     });
 
     $('#btn-save').on('click', function() {

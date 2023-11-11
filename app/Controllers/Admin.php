@@ -32,7 +32,7 @@ class Admin extends BaseController
         $this->objEmail = \Config\Services::email($emailConfig);
     }
 
-    public function index(): string
+    public function index()
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
@@ -47,7 +47,9 @@ class Admin extends BaseController
         return view('admin/header/index', $data);
     }
 
-    public function showViewProducts(): string
+    #PRODUCTS
+
+    public function showViewProducts()
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
@@ -63,37 +65,7 @@ class Admin extends BaseController
         return view('admin/header/index', $data);
     }
 
-    public function showViewEmployees(): string
-    {
-        # Verify Admin Session
-        if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
-            $response = array();
-            $response['error'] = 2;
-            $response['msg'] = 'SESSION_EXPIRED';
-            return json_encode($response);
-        }
-        $data = array();
-        $data['user'] = $this->objSession->get('user');
-        $data['page'] = 'admin/main';
-        return view('admin/header/index', $data);
-    }
-
-    public function showViewSales(): string
-    {
-        # Verify Admin Session
-        if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
-            $response = array();
-            $response['error'] = 2;
-            $response['msg'] = 'SESSION_EXPIRED';
-            return json_encode($response);
-        }
-        $data = array();
-        $data['user'] = $this->objSession->get('user');
-        $data['page'] = 'admin/main';
-        return view('admin/header/index', $data);
-    }
-
-    public function showViewCreateProduct(): string
+    public function showViewCreateProduct()
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
@@ -110,7 +82,43 @@ class Admin extends BaseController
         return view('admin/header/index', $data);
     }
 
-    public function createProduct(): string
+    public function productActions()
+    {
+        # Verify Admin Session
+        if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
+            $response = array();
+            $response['error'] = 2;
+            $response['msg'] = 'SESSION_EXPIRED';
+            return json_encode($response);
+        }
+
+        $id = htmlspecialchars(trim($this->objRequest->getPost('id')));
+        $action = htmlspecialchars(trim($this->objRequest->getPost('action')));
+        $data = array();
+        if ($action == 'edit') {
+            $data['user'] = $this->objSession->get('user');
+            $data['categories'] = $this->objMainModel->objData('category');
+            $data['subCategories'] = $this->objMainModel->objData('subCategory');
+            $data['product'] = $this->objMainModel->objDataByID('products', $id);
+            $data['edit'] = 'yes';
+            return view('admin/products/createProduct', $data);
+        } elseif ($action == 'delete') {
+            $response = $this->objMainModel->objDelete('products', $id);
+            return json_encode($response);
+        } elseif ($action == 'update') {
+            $data['name'] = htmlspecialchars(trim($this->objRequest->getPost('name')));
+            $data['description'] = htmlspecialchars(trim($this->objRequest->getPost('description')));
+            $data['price'] = htmlspecialchars(trim($this->objRequest->getPost('price')));
+            $data['status'] = htmlspecialchars(trim($this->objRequest->getPost('status')));
+            $data['categoryID'] = htmlspecialchars(trim($this->objRequest->getPost('category')));
+            $data['subcategoryID'] = htmlspecialchars(trim($this->objRequest->getPost('subCategory')));
+            $data['quantity'] = htmlspecialchars(trim($this->objRequest->getPost('quantity')));
+            $response = $this->objMainModel->objUpdate('products', $data, $id);
+            return json_encode($response);
+        }
+    }
+
+    public function createProduct()
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
@@ -144,7 +152,7 @@ class Admin extends BaseController
         return json_encode($response);
     }
 
-    public function showViewModalCreateCategory(): string
+    public function showViewModalCreateCategory()
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
@@ -157,7 +165,7 @@ class Admin extends BaseController
         return view('admin/modals/createCategory');
     }
 
-    public function createCategory(): string
+    public function createCategory()
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
@@ -182,7 +190,7 @@ class Admin extends BaseController
         return json_encode($response);
     }
 
-    public function showViewModalCreateSubCategory(): string
+    public function showViewModalCreateSubCategory()
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
@@ -194,10 +202,10 @@ class Admin extends BaseController
 
         $data['categories'] = $this->objMainModel->objData('category');
 
-        return view('admin/modals/createSubCategory',$data);
+        return view('admin/modals/createSubCategory', $data);
     }
 
-    public function createSubCategory(): string
+    public function createSubCategory()
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
@@ -221,6 +229,38 @@ class Admin extends BaseController
         $response = $this->objMainModel->objCreate('subcategory', $data);
 
         return json_encode($response);
+    }
+
+    #END PRODUCTS
+
+    public function showViewEmployees()
+    {
+        # Verify Admin Session
+        if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
+            $response = array();
+            $response['error'] = 2;
+            $response['msg'] = 'SESSION_EXPIRED';
+            return json_encode($response);
+        }
+        $data = array();
+        $data['user'] = $this->objSession->get('user');
+        $data['page'] = 'admin/main';
+        return view('admin/header/index', $data);
+    }
+
+    public function showViewSales()
+    {
+        # Verify Admin Session
+        if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
+            $response = array();
+            $response['error'] = 2;
+            $response['msg'] = 'SESSION_EXPIRED';
+            return json_encode($response);
+        }
+        $data = array();
+        $data['user'] = $this->objSession->get('user');
+        $data['page'] = 'admin/main';
+        return view('admin/header/index', $data);
     }
 }
     //var_dump($data['user']);exit();

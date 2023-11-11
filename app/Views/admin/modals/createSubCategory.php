@@ -13,7 +13,7 @@
                     </div>
                     <div class="col-6">
                         <label class="form-label">Categoría</label>
-                        <select id="sel-category" class="form-select mb-2" data-control="select2" data-placeholder="Seleccione una opción">
+                        <select id="sel-category" class="form-select mb-2 requiredModal focus" data-control="select2" data-placeholder="Seleccione una opción">
                             <option value="" hidden></option>
                             <?php foreach ($categories as $category) : ?>
                                 <option value="<?php echo $category->id ?>"><?php echo $category->name ?></option>
