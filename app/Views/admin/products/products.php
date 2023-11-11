@@ -16,6 +16,7 @@
                                     <th class="text-center">ID del Producto</th>
                                     <th class="text-center">Cantidad</th>
                                     <th class="text-center">Precio</th>
+                                    <th class="text-center">Precio de Descuento</th>
                                     <th class="text-center">Rating</th>
                                     <th class="text-center">Estado</th>
                                     <th class="text-center">Acciones</th>
@@ -25,7 +26,7 @@
                                 <?php foreach ($products as $product) : ?>
                                     <tr>
                                         <td class="text-center">
-                                            <p id="productName" class="text-gray-800 text-hover-primary fs-5 fw-bold" style="cursor: pointer;"><?php echo $product->name; ?></p>
+                                            <?php echo $product->name; ?>
                                         </td>
                                         <td class="text-center">
                                             <p><?php echo $product->productID; ?></p>
@@ -34,7 +35,10 @@
                                             <p><?php echo $product->quantity; ?></p>
                                         </td>
                                         <td class="text-center">
-                                            <p><?php echo $product->price; ?></p>
+                                            <p>$<?php echo $product->price; ?></p>
+                                        </td>
+                                        <td class="text-center">
+                                            <p><?php echo $product->discountPrice; ?></p>
                                         </td>
                                         <td class="text-center">
                                             <p></p>
@@ -69,20 +73,6 @@
             [10, 25, 50, 100, -1],
             [10, 25, 50, 100, "All"]
         ],
-    });
-
-    $('#productName').on('click', function() {
-        $.ajax({
-            type: "post",
-            url: "<?php echo base_url('Admin/showViewEditProduct'); ?>",
-            data: {
-                'id': ''
-            },
-            dataType: "html",
-            success: function(response) {
-
-            }
-        });
     });
 
     dtProducts.on('click', '.action', function() {

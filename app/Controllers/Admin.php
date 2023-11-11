@@ -99,7 +99,32 @@ class Admin extends BaseController
             $data['user'] = $this->objSession->get('user');
             $data['categories'] = $this->objMainModel->objData('category');
             $data['subCategories'] = $this->objMainModel->objData('subCategory');
-            $data['product'] = $this->objMainModel->objDataByID('products', $id);
+            $product = $this->objMainModel->objDataByID('products', $id);
+            $col['id'] = $product[0]->id;
+            $col['name'] = $product[0]->name;
+            $col['description'] = $product[0]->description;
+            $col['price'] = $product[0]->price;
+            $col['discountPrice'] = $product[0]->discountPrice;
+            $col['quantity'] = $product[0]->quantity;
+            $col['status'] = $product[0]->status;
+            $col['categoryID'] = $product[0]->categoryID;
+            $col['subcategoryID'] = $product[0]->subcategoryID;
+
+            $category = $this->objMainModel->objDataByID('category', $product[0]->categoryID);
+            if (!empty($category)) {
+                $col['categoryID'] = $category[0]->id;
+                $col['categoryName'] = $category[0]->name;
+                $result = $this->objMainModel->objDataByID('subcategory', $product[0]->subcategoryID);
+                if (!empty($result)) {
+                    $col['subCategoryID'] = $result[0]->id;
+                    $col['subCategoryName'] = $result[0]->name;
+                } else {
+                    $col['subCategoryID'] = '';
+                    $col['subCategoryName'] = '';
+                }
+            }
+            $data['product'] = $col;
+            // var_dump($data['product']); exit();
             $data['edit'] = 'yes';
             return view('admin/products/createProduct', $data);
         } elseif ($action == 'delete') {
@@ -108,12 +133,21 @@ class Admin extends BaseController
         } elseif ($action == 'update') {
             $data['name'] = htmlspecialchars(trim($this->objRequest->getPost('name')));
             $data['description'] = htmlspecialchars(trim($this->objRequest->getPost('description')));
-            $data['price'] = htmlspecialchars(trim($this->objRequest->getPost('price')));
+            $data['price'] = str_replace("_", "", htmlspecialchars(trim($this->objRequest->getPost('price'))));
+            $data['discountPrice'] = str_replace("_", "", htmlspecialchars(trim($this->objRequest->getPost('discountPrice'))));
             $data['status'] = htmlspecialchars(trim($this->objRequest->getPost('status')));
             $data['categoryID'] = htmlspecialchars(trim($this->objRequest->getPost('category')));
             $data['subcategoryID'] = htmlspecialchars(trim($this->objRequest->getPost('subCategory')));
             $data['quantity'] = htmlspecialchars(trim($this->objRequest->getPost('quantity')));
-            $response = $this->objMainModel->objUpdate('products', $data, $id);
+            $countPrice = strlen(preg_replace('/[^0-9]/', '', $data['price']));
+            $countDiscountPrice = strlen(preg_replace('/[^0-9]/', '', $data['discountPrice']));
+            if ($countPrice < 3) {
+                $response['error'] = 'INVALID_PRICE';
+            } elseif ($countDiscountPrice < 3 && !empty(htmlspecialchars(trim($this->objRequest->getPost('discountPrice'))))) {
+                $response['error'] = 'INVALID_DISCOUNT_PRICE';
+            } else {
+                $response = $this->objMainModel->objUpdate('products', $data, $id);
+            }
             return json_encode($response);
         }
     }
@@ -141,13 +175,21 @@ class Admin extends BaseController
         $data['productID'] = $productID;
         $data['name'] = htmlspecialchars(trim($this->objRequest->getPost('name')));
         $data['description'] = htmlspecialchars(trim($this->objRequest->getPost('description')));
-        $data['price'] = htmlspecialchars(trim($this->objRequest->getPost('price')));
+        $data['price'] = str_replace("_", "", htmlspecialchars(trim($this->objRequest->getPost('price'))));
+        $data['discountPrice'] = str_replace("_", "", htmlspecialchars(trim($this->objRequest->getPost('discountPrice'))));
         $data['status'] = htmlspecialchars(trim($this->objRequest->getPost('status')));
         $data['categoryID'] = htmlspecialchars(trim($this->objRequest->getPost('category')));
         $data['subcategoryID'] = htmlspecialchars(trim($this->objRequest->getPost('subCategory')));
         $data['quantity'] = htmlspecialchars(trim($this->objRequest->getPost('quantity')));
-
-        $response = $this->objMainModel->objCreate('products', $data);
+        $countPrice = strlen(preg_replace('/[^0-9]/', '', $data['price']));
+        $countDiscountPrice = strlen(preg_replace('/[^0-9]/', '', $data['discountPrice']));
+        if ($countPrice < 3) {
+            $response['error'] = 'INVALID_PRICE';
+        } elseif ($countDiscountPrice < 3 && !empty(htmlspecialchars(trim($this->objRequest->getPost('discountPrice'))))) {
+            $response['error'] = 'INVALID_DISCOUNT_PRICE';
+        } else {
+            $response = $this->objMainModel->objCreate('products', $data);
+        }
 
         return json_encode($response);
     }

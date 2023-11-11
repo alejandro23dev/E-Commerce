@@ -1,8 +1,8 @@
 <?php echo view('client/nav/navbar'); ?>
 <!-- SECTION CATEGORIES -->
-<div class="row mt-6 p-0 text-center">
+<div class="row mt-6 p-0  text-center">
     <?php foreach ($categories as $category) : ?>
-        <div class="col-1 hover-scale m-1 categoryNav categoryID-<?php echo $category->id; ?>" data-id="<?php echo $category->id; ?>" style="cursor: pointer;">
+        <div class="col-12 col-lg-1 hover-scale m-1 categoryNav categoryID-<?php echo $category->id; ?>" data-id="<?php echo $category->id; ?>" style="cursor: pointer;">
             <p><?php echo $category->name; ?></p>
         </div>
     <?php endforeach; ?>
@@ -16,7 +16,7 @@
 <?php endif; ?>
 <div class="row mt-6 align-items-center">
     <?php foreach ($products as $product) : ?>
-        <div class="card shadow rounded col-3 m-6 hover-elevate-up">
+        <div class="card shadow rounded col-12 col-lg-3 m-6 hover-elevate-up">
             <div class="card-body">
                 <div class="text-center">
                     <img src="<?php echo base_url('public/assets/media/avatars/300-1.jpg'); ?>" class="shadow rounded-circle w-250px hover-scale" title="Ver Más Información" style="cursor: pointer;" alt="Imagen">
@@ -24,8 +24,22 @@
                 <div class="mt-5">
                     <h2 class="text-uppercase"><?php echo $product->name; ?></h2>
                     <h6 class="text-muted"><?php if (empty($product->description)) echo "<span class='fst-italic'><i class='fa fa-info-circle text-warning'></i> No se ha proporcionado una descripción de este producto</span>";
-                                                            else echo $product->description; ?></h6>
-                    <h1 class="text-center mt-6">$<?php echo $product->price; ?></h1>
+                                            else echo $product->description; ?></h6>
+                    <?php if (empty($product->discountPrice)) : ?>
+                        <div>
+                            <h2 class="text-center mt-6">$<?php echo $product->price; ?></h2>
+                        </div>
+                    <?php else : ?>
+                        <div class="row">
+                            <div class="col-12 col-lg-4">
+                                <h6 class="text-center text-danger mt-6 text-decoration-line-through">$<?php echo $product->price; ?></h6>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <h2 class="text-start mt-6">$<?php echo $product->discountPrice; ?></h2>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
                 </div>
                 <?php if ($product->status == 'En Venta') : ?>
                     <div class="mt-5 text-center">

@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title><?php echo COMPANY_NAME; ?></title>
+    <title><?php echo COMPANY_NAME; ?> ADMIN</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
@@ -20,7 +20,6 @@
     <script src="<?php echo base_url('public/assets/plugins/custom/fslightbox/fslightbox.bundle.js'); ?>"></script>
     <script src="<?php echo base_url('public/assets/plugins/custom/typedjs/typedjs.bundle.js'); ?>"></script>
     <script src="<?php echo base_url('public/assets/plugins/custom/datatables/datatables.bundle.js'); ?>"></script>
-
     <script>
         function globalError() {
             Swal.fire({

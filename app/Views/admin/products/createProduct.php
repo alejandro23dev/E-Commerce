@@ -54,7 +54,7 @@
                     </div>
                     <div class="card-body pt-0">
                         <select id="sel-status" class="form-select mb-2" data-control="select2" data-hide-search="true" data-placeholder="Seleccione una opción">
-                            <option value="<?php echo @$product[0]->status; ?>" hidden><?php echo @$product[0]->status; ?></option>
+                            <option value="<?php echo @$product['status']; ?>" hidden><?php echo @$product['status']; ?></option>
                             <option value="En Venta">En Venta</option>
                             <option value="Pronto en Venta">Pronto en Venta</option>
                         </select>
@@ -70,7 +70,7 @@
                     <div class="card-body pt-0">
                         <label class="form-label">Categoría</label>
                         <select id="sel-category" class="form-select mb-2" data-control="select2" data-placeholder="Seleccione una opción">
-                            <option value="<?php echo @$product[0]->categoryID; ?>" hidden><?php echo @$product[0]->categoryID; ?></option>
+                            <option value="<?php echo @$product['categoryID']; ?>" hidden><?php echo @$product['categoryName']; ?></option>
                             <?php foreach ($categories as $category) : ?>
                                 <option value="<?php echo $category->id ?>"><?php echo $category->name ?></option>
                             <?php endforeach; ?>
@@ -80,7 +80,7 @@
                             <i class="ki-duotone ki-plus fs-2"></i>Crear nueva categoría</a>
                         <label class="form-label">SubCategoría</label>
                         <select id="sel-subCategory" class="form-select mb-2" data-control="select2" data-placeholder="Seleccione una opción">
-                            <option value="<?php echo @$product[0]->subCategoryID; ?>" hidden><?php echo @$product[0]->subcategoryID; ?></option>
+                            <option value="<?php echo @$product['subCategoryID']; ?>" hidden><?php echo @$product['subCategoryName']; ?></option>
                             <?php foreach ($subCategories as $subCategory) : ?>
                                 <option value="<?php echo $subCategory->id ?>"><?php echo $subCategory->name ?></option>
                             <?php endforeach; ?>
@@ -99,12 +99,12 @@
                                 <div class="card-body pt-0">
                                     <div class="mb-10 fv-row">
                                         <label class="form-label">Nombre del Producto</label>
-                                        <input type="text" id="productName" class="form-control mb-2 required focus" placeholder="Nombre del Producto" value="<?php echo @$product[0]->name; ?>" />
+                                        <input type="text" id="productName" class="form-control mb-2 required focus" placeholder="Nombre del Producto" value="<?php echo @$product['name']; ?>" />
                                         <div class="text-muted fs-7">Se recomienda de que el nombre del producto sea único.</div>
                                     </div>
                                     <div>
                                         <label class="form-label">Descripción <span class="text-muted fst-italic">(Opcional)</span></label>
-                                        <textarea id="productDescription" class="form-control mb-2" ><?php echo @$product[0]->description; ?></textarea>
+                                        <textarea id="productDescription" class="form-control mb-2"><?php echo @$product['description']; ?></textarea>
                                         <div class="text-muted fs-7">Realice una descripción de su producto para mejor visibilidad.</div>
                                     </div>
                                 </div>
@@ -118,7 +118,7 @@
                                 <div class="card-body pt-0">
                                     <div class="mb-10 fv-row">
                                         <label class="form-label">Cantidad del Producto</label>
-                                        <input type="text" id="productQuantity" class="form-control mb-2 required focus number" placeholder="Cantidad del Producto" value="<?php echo @$product[0]->quantity; ?>" />
+                                        <input type="text" id="productQuantity" class="form-control mb-2 required focus number" placeholder="Cantidad del Producto" value="<?php echo @$product['quantity']; ?>" />
                                         <div class="text-muted fs-7">Escriba la cantidad de su producto.</div>
                                     </div>
                                 </div>
@@ -130,22 +130,28 @@
                                     </div>
                                 </div>
                                 <div class="card-body pt-0">
-                                    <div class="mb-10 fv-row">
-                                        <label class="form-label">Precio del Producto</label>
-                                        <input type="text" id="productPrice" class="form-control mb-2 required focus number" placeholder="Precio del Producto" value="<?php echo @$product[0]->price; ?>" />
-                                        <div class="text-muted fs-7">Escriba el precio de su producto.</div>
+                                    <div class="mb-10 row">
+                                        <div class="col-12 col-lg-6">
+                                            <label class="form-label">Precio del Producto</label>
+                                            <input type="text" id="productPrice" class="form-control mb-2 required focus number" placeholder="Precio del Producto" value="<?php echo @$product['price']; ?>" />
+                                            <div class="text-muted fs-7">Escriba el precio de su producto.</div>
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label class="form-label">Precio De Descuento del Producto</label>
+                                            <input type="text" id="productDiscountPrice" class="form-control mb-2 focus number" placeholder="Nuevo Precio" value="<?php echo @$product['discountPrice']; ?>" />
+                                            <div class="text-muted fs-7">Escriba el nuevo precio.</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="text-center justify-content-around row">
                                 <?php if (@$edit) : ?>
                                     <a href="<?php echo base_url('Admin/showViewProducts'); ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Descartar</a>
-                                    <button type="button" id="btn-update" data-id="<?php echo @$product[0]->id; ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Actualizar Cambios</button>
+                                    <button type="button" id="btn-update" data-id="<?php echo @$product['id']; ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Actualizar Cambios</button>
                                 <?php else : ?>
                                     <a href="<?php echo base_url('Admin/showViewProducts'); ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Descartar</a>
                                     <button type="button" id="btn-save" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Añadir Nuevo Producto</button>
                                 <?php endif; ?>
-
                             </div>
                         </div>
                     </div>
@@ -158,6 +164,14 @@
 <?php echo view('functionsJS/formValidation'); ?>
 
 <script>
+    Inputmask("999.99", {
+        "numericInput": true
+    }).mask("#productPrice");
+
+    Inputmask("999.99", {
+        "numericInput": true
+    }).mask("#productDiscountPrice");
+
     $('#btn-createCategory').on('click', function() {
         $.ajax({
             type: "post",
@@ -193,6 +207,7 @@
                     'name': $('#productName').val(),
                     'description': $('#productDescription').val(),
                     'price': $('#productPrice').val(),
+                    'discountPrice': $('#productDiscountPrice').val(),
                     'status': $('#sel-status').val(),
                     'category': $('#sel-category').val(),
                     'subCategory': $('#sel-subCategory').val(),
@@ -211,7 +226,26 @@
                             setTimeout(function() {
                                 window.location.href = "<?php echo base_url('Admin/showViewProducts'); ?>";
                             }, 2000);
-
+                            break;
+                        case 'INVALID_PRICE':
+                            $('#productPrice').addClass('required is-invalid');
+                            Swal.fire({
+                                title: 'Introduzca correctamente el precio',
+                                icon: 'warning',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $('#btn-update').removeAttr('disabled');
+                            break;
+                        case 'INVALID_DISCOUNT_PRICE':
+                            $('#productDiscountPrice').addClass('required is-invalid');
+                            Swal.fire({
+                                title: 'Introduzca correctamente el precio',
+                                icon: 'warning',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $('#btn-update').removeAttr('disabled');
                             break;
                     }
                 },
@@ -247,6 +281,7 @@
                     'name': $('#productName').val(),
                     'description': $('#productDescription').val(),
                     'price': $('#productPrice').val(),
+                    'discountPrice': $('#productDiscountPrice').val(),
                     'status': $('#sel-status').val(),
                     'category': $('#sel-category').val(),
                     'subCategory': $('#sel-subCategory').val(),
@@ -267,8 +302,25 @@
                             }, 2000);
 
                             break;
-                        case 1:
-
+                        case 'INVALID_PRICE':
+                            $('#productPrice').addClass('required is-invalid');
+                            Swal.fire({
+                                title: 'Introduzca correctamente el precio',
+                                icon: 'warning',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $('#btn-save').removeAttr('disabled');
+                            break;
+                        case 'INVALID_DISCOUNT_PRICE':
+                            $('#productDiscountPrice').addClass('required is-invalid');
+                            Swal.fire({
+                                title: 'Introduzca correctamente el precio',
+                                icon: 'warning',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $('#btn-save').removeAttr('disabled');
                             break;
                     }
                 },
