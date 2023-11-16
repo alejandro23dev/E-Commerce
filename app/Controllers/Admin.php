@@ -34,13 +34,11 @@ class Admin extends BaseController
 
     public function index()
     {
-        # Verify Admin Session
-        if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
-            $response = array();
-            $response['error'] = 2;
-            $response['msg'] = 'SESSION_EXPIRED';
-            return json_encode($response);
-        }
+       # Verify Admin Session
+       if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') 
+       return view('logoutAdmin');
+
+
         $data = array();
         $data['user'] = $this->objSession->get('user');
         $data['page'] = 'admin/main';
@@ -53,11 +51,10 @@ class Admin extends BaseController
     {
         # Verify Admin Session
         if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
-            $response = array();
-            $response['error'] = 2;
-            $response['msg'] = 'SESSION_EXPIRED';
-            return json_encode($response);
+            return view('logoutAdmin');
         }
+           
+
         $data = array();
         $data['user'] = $this->objSession->get('user');
         $data['page'] = 'admin/products/products';
@@ -68,12 +65,9 @@ class Admin extends BaseController
     public function showViewCreateProduct()
     {
         # Verify Admin Session
-        if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') {
-            $response = array();
-            $response['error'] = 2;
-            $response['msg'] = 'SESSION_EXPIRED';
-            return json_encode($response);
-        }
+        if (empty($this->objSession->get('user')) || $this->objSession->get('user')['role'] != 'admin') 
+            return view('logoutAdmin');
+        
         $data = array();
         $data['user'] = $this->objSession->get('user');
         $data['page'] = 'admin/products/createProduct';

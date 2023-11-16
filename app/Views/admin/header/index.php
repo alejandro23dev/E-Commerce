@@ -38,7 +38,7 @@
 
 <body>
     <div class="container">
-        <div id="modal"></div>
+    <div id="modal"></div>
         <div id="view">
             <?php echo view($page); ?>
         </div>

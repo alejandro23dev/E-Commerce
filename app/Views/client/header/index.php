@@ -4,9 +4,7 @@
     <title><?php echo COMPANY_NAME; ?></title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
     <link rel="shortcut icon" href="<?php echo base_url('public/assets/media/logos/favicon.ico'); ?>" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!-- css --->
     <link href="<?php echo base_url('public/assets/plugins/global/plugins.bundle.css'); ?>" rel="stylesheet" type="text/css" />
     <link href="<?php echo base_url('public/assets/css/style.bundle.css'); ?>" rel="stylesheet" type="text/css" />
@@ -36,11 +34,13 @@
 
 </head>
 <style>
-    .active{
+    .active {
         border-bottom: 2px solid #3e97ff;
     }
 </style>
+
 <body>
+    <div id="modal"></div>
     <div id="page" class="container">
         <?php echo view($page); ?>
     </div>

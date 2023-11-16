@@ -40,50 +40,18 @@ class Authentication extends BaseController
         $this->objEmail = \Config\Services::email($emailConfig);
     }
 
-    public function signIn()
+    public function signInAdmin()
     {
         $data['page'] = 'admin/login/signIn';
         return view('admin/header/index', $data);
-    } // ok
-
-    public function signInProcess(): string
-    {
-        $user = htmlspecialchars(trim($this->objRequest->getPost('user')));
-        $password = htmlspecialchars(trim($this->objRequest->getPost('password')));
-
-        $result = $this->objAuthenticationModel->login('admin', $user, $password);
-
-        if ($result['error'] == 1)
-            return json_encode($result);
-
-        # CREATE SESSION
-        $sessionArray = array();
-        $sessionArray['userID'] = $result['data']->id;
-        $sessionArray['user'] = $result['data']->user;
-        $sessionArray['email'] = $result['data']->email;
-        $sessionArray['role'] = $result['data']->role;
-
-        $this->objSession->set('user', $sessionArray);
-
-        $response = array();
-        $response['error'] = 0;
-        $response['role'] = $sessionArray['role'];
-
-        return json_encode($response);
     }
 
-    public function signup(): string
-    {
-        $data['page'] = 'admin/login/signIn';
-        return view('admin/header/index', $data);
-    } // ok
-
-    public function signupProcess()
+    public function signUpProcessClient()
     {
         $userName = htmlspecialchars(trim($this->objRequest->getPost('userName')));
         $email = htmlspecialchars(trim($this->objRequest->getPost('email')));
         $password = password_hash(htmlspecialchars(trim($this->objRequest->getPost('password'))), PASSWORD_DEFAULT);
-        $role = $this->objRequest->getPost('role');
+        $role = 'client';
         $token = md5(uniqid());
 
         # Check Duplicate User
@@ -131,128 +99,56 @@ class Authentication extends BaseController
         }*/
 
         return json_encode($resultCreateUser);
-    } // ok
+    }
 
-    public function confirmSignup(): string
+    public function signInProcessAdmin()
     {
-        $token = $this->objRequest->getPostGet();
+        $user = htmlspecialchars(trim($this->objRequest->getPost('user')));
+        $password = htmlspecialchars(trim($this->objRequest->getPost('password')));
 
-        if (empty($token)) {
-            $data = array();
-            $data['title'] = "Error";
-            $data['msg'] = "Empty Token";
-            return view('errorPage/template', $data);
-        }
 
-        $result = $this->objMainModel->objDataByField('clients', 'token', $token);
+        $result = $this->objAuthenticationModel->login('admin', $user, $password);
 
-        if (!empty($result)) {
-            $data = array();
-            $data['activate_status'] = 1;
-            $data['token'] = '';
+        if ($result['error'] == 1)
+            return json_encode($result);
 
-            # Update User 
-            $this->objMainModel->objUpdate('clients', $data, $result[0]->id);
+        # CREATE SESSION
+        $sessionArray = array();
+        $sessionArray['userID'] = $result['data']->id;
+        $sessionArray['user'] = $result['data']->user;
+        $sessionArray['email'] = $result['data']->email;
+        $sessionArray['role'] = $result['data']->role;
 
-            $data = array();
-            $data['title'] = "Success";
-            $data['msg'] = "Activated Account";
-            return view('errorPage/template', $data);
-        } else {
-            $data = array();
-            $data['title'] = "Error";
-            $data['msg'] = "Token Expired";
-            return view('errorPage/template', $data);
-        }
-    } // ok
+        $this->objSession->set('user', $sessionArray);
 
-    public function forgotPassword(): string
-    {
-        $data = array();
-        $data['uniqid'] = uniqid();
-        return view('forgotPassword/mainForgotPassword', $data);
-    } // ok
-
-    public function forgotPasswordProcess(): string
-    {
-        $email = htmlspecialchars(trim($this->objRequest->getPost('email')));
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $response = array();
-            $response['error'] = 1;
-            $response['msg'] = 'INVALID_EMAIL';
-            return json_encode($response);
-        }
-
-        $result = $this->objMainModel->objDataByField('user', 'email', $email);
-
-        if (empty($result)) {
-            $response = array();
-            $response['error'] = 1;
-            $response['msg'] = 'EMAIL_NOT_FOUND';
-            return json_encode($response);
-        }
-
-        $data = array();
-        $data['token'] = md5(uniqid());
-
-        # Update User
-        $this->objMainModel->objUpdate('user', $data, $result[0]->id);
-
-        $emailData = array();
-        $emailData['url'] = base_url('Authentication/showFormNewPassword') . '?token=' . $data['token'];
-
-        $this->objEmail->setFrom(EMAIL_SMTP_USER, COMPANY_NAME);
-        $this->objEmail->setTo($email);
-        $this->objEmail->setSubject(COMPANY_NAME);
-        $this->objEmail->setMessage(view('email/recoveryPassword', $emailData), []);
-
-        if ($this->objEmail->send(false)) {
-            $response = array();
-            $response['error'] = 0;
-            $response['msg'] = 'SUCCESS_SEND_EMAIL';
-        } else {
-            $response = array();
-            $response['error'] = 1;
-            $response['msg'] = 'ERROR_SEND_EMAIL';
-        }
+        $response = array();
+        $response['error'] = 0;
 
         return json_encode($response);
-    } // ok
+    }
 
-    public function showFormNewPassword()
+    public function signInProcessClient()
     {
-        $token = $this->objRequest->getPostGet();
+        $user = htmlspecialchars(trim($this->objRequest->getPost('user')));
+        $password = htmlspecialchars(trim($this->objRequest->getPost('password')));
 
-        if (empty($token)) {
-            $data = array();
-            $data['title'] = "Error";
-            $data['msg'] = "Empty Token";
-            return view('errorPage/template', $data);
-        }
+        $result = $this->objAuthenticationModel->login('clients', $user, $password);
 
-        $result = $this->objMainModel->objDataByField('user', 'token', $token);
+        if ($result['error'] == 1)
+            return json_encode($result);
 
-        if (!empty($result)) {
-            $data = array();
-            $data['id'] = $result[0]->id;
-            $data['uniqid'] = uniqid();
-            return view('recoveryPassword/mainRecoveryPassword', $data);
-        } else {
-            $data = array();
-            $data['title'] = "Error";
-            $data['msg'] = "Token Expired";
-            return view('errorPage/template', $data);
-        }
-    } // ok
+        # CREATE SESSION
+        $sessionArray = array();
+        $sessionArray['userID'] = $result['data']->id;
+        $sessionArray['user'] = $result['data']->user;
+        $sessionArray['email'] = $result['data']->email;
+        $sessionArray['role'] = $result['data']->role;
 
-    public function updatePassword()
-    {
-        $data = array();
-        $data['token'] = '';
-        $data['pass'] = password_hash($this->objRequest->getPost('newPassword'), PASSWORD_DEFAULT);
-        # Update User
-        $result = $this->objMainModel->objUpdate('user', $data, $this->objRequest->getPost('id'));
-        return json_encode($result);
-    } // ok
+        $this->objSession->set('user', $sessionArray);
+
+        $response = array();
+        $response['error'] = 0;
+
+        return json_encode($response);
+    }
 }

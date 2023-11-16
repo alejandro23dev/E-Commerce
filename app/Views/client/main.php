@@ -1,4 +1,6 @@
 <?php echo view('client/nav/navbar'); ?>
+
+<div id="modal"></div>
 <!-- SECTION CATEGORIES -->
 <div class="row mt-6 p-0  text-center">
     <?php foreach ($categories as $category) : ?>
@@ -8,82 +10,71 @@
     <?php endforeach; ?>
 </div>
 <!-- SECTION PRODUCTS CARDS -->
-<?php if (empty($products)) : ?>
-    <div class="text-center" style="height: 50vh;margin-top: 10vh;">
-        <img src="<?php echo base_url('public/assets/noResult.jpg'); ?>" class="w-25 rounded-circle text-center" alt="Imagen">
-        <h1 class="mt-5 text-muted">No hay Productos disponibles de esta categoría</h1>
-    </div>
-<?php endif; ?>
-<div class="row mt-6 align-items-center">
-    <?php foreach ($products as $product) : ?>
-        <div class="card shadow rounded col-12 col-lg-3 m-6 hover-elevate-up">
-            <div class="card-body">
-                <div class="text-center">
-                    <img src="<?php echo base_url('public/assets/media/avatars/300-1.jpg'); ?>" class="shadow rounded-circle w-250px hover-scale" title="Ver Más Información" style="cursor: pointer;" alt="Imagen">
-                </div>
-                <div class="mt-5">
-                    <h2 class="text-uppercase"><?php echo $product->name; ?></h2>
-                    <h6 class="text-muted"><?php if (empty($product->description)) echo "<span class='fst-italic'><i class='fa fa-info-circle text-warning'></i> No se ha proporcionado una descripción de este producto</span>";
-                                            else echo $product->description; ?></h6>
-                    <?php if (empty($product->discountPrice)) : ?>
-                        <div>
-                            <h2 class="text-center mt-6">$<?php echo $product->price; ?></h2>
-                        </div>
-                    <?php else : ?>
-                        <div class="row">
-                            <div class="col-12 col-lg-4">
-                                <h6 class="text-center text-danger mt-6 text-decoration-line-through">$<?php echo $product->price; ?></h6>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <h2 class="text-start mt-6">$<?php echo $product->discountPrice; ?></h2>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                </div>
-                <?php if ($product->status == 'En Venta') : ?>
-                    <div class="mt-5 text-center">
-                        <button type="button" class="btn btn-primary shadow btn-buy" data-id="<?php echo $product->id; ?>">Comprar <i class="fa fa-shopping-basket"></i></button>
-                    </div>
-                    <p class="text-center mt-5 text-muted"><?php if ($product->quantity < 25) echo "Quedan menos de 25 unidades"; ?></p>
-                <?php else : ?>
-                    <h3 class="fst-italic text-muted text-center mt-6"><i class="fa fa-info-circle fs-2 text-warning"></i> Pronto en Venta</h3>
-                <?php endif; ?>
-            </div>
-        </div>
-    <?php endforeach; ?>
-</div>
+<div id="main-products"></div>
 <!-- SECTION FOOTER -->
 <?php echo view('footer/footer'); ?>
 
 <script>
-    var categorySelected = "<?php echo @$categorySelected; ?>";
+    $('.categoryID-1').addClass('active');
 
-    if (categorySelected == '') {
-        $('.categoryID-1').addClass('active');
+    getProductsByCategory('');
+
+    var notLogin = "<?php echo @$notLogin; ?>";
+
+    if (notLogin == 'yes') {
+        $('.loginRequired').attr('hidden', true);
+        $('.btn-buy').removeAttr('data-id');
+        $('.btn-buy').html('Iniciar Sesion');
+        $('.btn-buy').addClass('btn-login');
+        $('.btn-buy').removeClass('btn-buy');
     }
 
-    if ($('.categoryNav').hasClass('categoryID-' + categorySelected)) {
-        $('.categoryID-' + categorySelected).addClass('active');
-    }
-
-    $('.categoryNav').on('click', function() {
-        $(this).addClass('active');
+    $('.btn-login').on('click', function() {
         $.ajax({
             type: "post",
-            url: "<?php echo base_url('Client/showProductsByCategory'); ?>",
-            data: {
-                'id': $(this).attr('data-id')
-            },
+            url: "<?php echo base_url('Client/showModalSignIn'); ?>",
             dataType: "html",
             success: function(response) {
-                $('#page').html(response);
+                $('#modal').html(response);
             }
         });
     });
 
+
+    function getProductsByCategory(id = '') {
+        var id = id;
+        $.ajax({
+            type: "post",
+            url: "<?php echo base_url('Client/showProductsByCategory'); ?>",
+            data: {
+                'id': id
+            },
+            dataType: "html",
+            success: function(response) {
+                $('#main-products').html(response);
+            }
+        });
+    }
+
+    $('.categoryNav').on('click', function() {
+        $('.categoryNav').removeClass('active');
+        $(this).addClass('active');
+
+        var id = $(this).attr('data-id');
+        getProductsByCategory(id);
+    });
+
     $('.btn-buy').on('click', function() {
         id = $(this).attr('data-id');
-        console.log('comprar producto ' + id);
+        $.ajax({
+            type: "post",
+            url: "<? ?>",
+            data: "data",
+            dataType: "dataType",
+            success: function(response) {
+
+            }
+        });
+        console.log('añadir producto ' + id);
     });
 </script>

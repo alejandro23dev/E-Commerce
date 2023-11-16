@@ -29,28 +29,34 @@ class Client extends BaseController
         $this->objEmail = \Config\Services::email($emailConfig);
     }
 
-    public function index(): string
+    public function index()
     {
         $data = array();
         $data['page'] = 'client/main';
         $data['categories'] = $this->objMainModel->objData('category');
         $data['products'] = $this->objMainModel->getProducts();
+        # Verify client Session
+        if (empty($this->objSession->get('user'))) {
+            $data['notLogin'] = 'yes';
+        } else {
+            $data['user'] = $this->objMainModel->objDataByID('clients', $this->objSession->get('user')['userID']);
+        }
         return view('client/header/index', $data);
     }
 
-    public function showSignUp(): string
+    public function showSignUp()
     {
         $data['page'] = 'login/signUp';
         return view('client/header/index', $data);
     }
 
-    public function showSignIn(): string
+    public function showSignIn()
     {
         $data['page'] = 'login/signIn';
         return view('client/header/index', $data);
     }
 
-    public function registerUser(): string
+    public function registerUser()
     {
         $userName = htmlspecialchars(trim($this->objRequest->getPost('userName')));
         $email = htmlspecialchars(trim($this->objRequest->getPost('email')));
@@ -103,21 +109,30 @@ class Client extends BaseController
         return json_encode($response);
     } // ok
 
-    public function showProductsByCategory(): string
+    public function showProductsByCategory()
     {
 
         $categoryID = htmlspecialchars(trim($this->objRequest->getPost('id')));
 
         $data = array();
+        # Verify client Session
+        if (empty($this->objSession->get('user'))) {
+            $data['notLogin'] = 'yes';
+        }
         $data['categories'] = $this->objMainModel->objData('category');
         $data['categorySelected'] = $categoryID;
-        if ($categoryID == 1) {
+        if ($categoryID == 1 || empty($categoryID)) {
             $data['products'] = $this->objMainModel->getProducts();
         } else {
             $data['products'] = $this->objMainModel->getProductsByCategory($categoryID);
         }
 
 
-        return view('client/main', $data);
+        return view('products/main', $data);
+    }
+
+    public function showModalSignIn()
+    {
+        return view('client/modals/login');
     }
 }

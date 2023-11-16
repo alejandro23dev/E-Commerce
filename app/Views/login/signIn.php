@@ -8,10 +8,10 @@
                             <h1 class="text-dark fw-bolder mb-3">Inicia Sesión</h1>
                         </div>
                         <div class="fv-row mb-8">
-                            <input type="text" placeholder="Username" class="form-control bg-transparent" />
+                            <input type="text" placeholder="Username" class="form-control bg-transparent required focus" />
                         </div>
                         <div class="fv-row mb-3">
-                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" />
+                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent required focus" />
                         </div>
                         <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
                             <div></div>
@@ -33,3 +33,83 @@
         </div>
     </div>
 </div>
+
+<?php echo view('functionsJS/formValidation'); ?>
+
+<script>
+    $('#btn-login').on('click', function() {
+        let resultCheckRequiredValues = checkRequiredValues('required');
+        $(this).attr('disabled', true);
+        if (resultCheckRequiredValues == 0) {
+            $.ajax({
+                type: "post",
+                url: "<?php echo base_url('Authentication/signInProcessAdmin'); ?>",
+                data: {
+                    'user': $('#user').val(),
+                    'password': $('#password').val(),
+                },
+                dataType: "json",
+                success: function(response) {
+                    switch (response.error) {
+                        case 0:
+                            window.location.href = "<?php echo base_url('Admin/main'); ?>"
+                            break;
+                        case 1:
+                            if (response.msg == 'USER_NOT_FOUND') {
+                                $('#btn-login').removeAttr('disabled');
+                                $('#user').addClass('is-invalid');
+                                Swal.fire({
+                                    title: 'Usuario no encontrado',
+                                    icon: 'error',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            if (response.msg == 'STATUS') {
+                                $('#btn-login').removeAttr('disabled');
+                                Swal.fire({
+                                    title: 'Primero debe de activar su cuenta',
+                                    icon: 'warning',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            if (response.msg == 'INVALID_PASSWORD') {
+                                $('#btn-login').removeAttr('disabled');
+                                $('#password').addClass('is-invalid');
+                                Swal.fire({
+                                    title: 'Contraseña incorrecta',
+                                    icon: 'error',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            break;
+                    }
+                },
+                error: function(error) {
+                    $('#btn-login').removeAttr('disabled');
+                    Swal.fire({
+                        title: 'Ha ocurrido un error',
+                        icon: 'error',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            });
+        } else {
+            $('#btn-login').removeAttr('disabled');
+            Swal.fire({
+                title: 'Complete la Información',
+                icon: 'warning',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    });
+</script>

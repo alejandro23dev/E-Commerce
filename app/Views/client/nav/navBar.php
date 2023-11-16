@@ -2,7 +2,7 @@
     <div class="navbar align-items-center">
         <img src="<?php echo base_url('public/assets/media/avatars/300-1.jpg'); ?>" class="w-100px rounded-circle" alt="Imagen">
         <h1 class="text-white"><?php echo COMPANY_NAME; ?></h1>
-        <div class="app-navbar flex-shrink-0 justify-content-end">
+        <div class="app-navbar flex-shrink-0 justify-content-end loginRequired">
             <div class="app-navbar-item align-items-stretch ms-1 ms-md-4">
                 <div id="kt_header_search" class="header-search d-flex align-items-stretch" data-kt-search-keypress="true" data-kt-search-min-length="2" data-kt-search-enter="enter" data-kt-search-layout="menu" data-kt-menu-trigger="auto" data-kt-menu-overflow="false" data-kt-menu-permanent="true" data-kt-menu-placement="bottom-end">
                     <div class="d-flex align-items-center" data-kt-search-element="toggle" id="kt_header_search_toggle">
@@ -59,10 +59,10 @@
                                 <img alt="Logo" src="<?php echo base_url('public/assets/media/avatars/300-1.jpg'); ?>" />
                             </div>
                             <div class="d-flex flex-column">
-                                <div class="fw-bold d-flex align-items-center fs-5">Robert Fox
+                                <div class="fw-bold d-flex align-items-center fs-5"><?php echo @$user[0]->user;?>
                                     <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2"></span>
                                 </div>
-                                <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">robert@kt.com</a>
+                                <a href="#" class="fw-semibold text-muted text-hover-primary fs-7"><?php echo @$user[0]->email;?></a>
                             </div>
                         </div>
                     </div>

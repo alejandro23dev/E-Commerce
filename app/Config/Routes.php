@@ -11,10 +11,11 @@ $routes->get('Client/showSignUp', 'Client::showSignUp');
 $routes->get('Client/showSignIn', 'Client::showSignIn');
 $routes->post('Client/registerUser', 'Client::registerUser');
 $routes->post('Client/showProductsByCategory', 'Client::showProductsByCategory');
+$routes->post('Client/showModalSignIn', 'Client::showModalSignIn');
 
 //ADMIN
 #GET
-$routes->get('Admin', 'Authentication::signIn');
+$routes->get('Admin', 'Authentication::signInAdmin');
 $routes->get('Admin/main', 'Admin::index');
 $routes->get('Admin/showViewProducts', 'Admin::showViewProducts');
 $routes->get('Admin/showViewEmployees', 'Admin::showViewEmployees');
@@ -34,4 +35,5 @@ $routes->post('Admin/productActions', 'Admin::productActions');
 
 //Authentication
 $routes->post('Authentication/login', 'Authentication::login');
-$routes->post('Authentication/signInProcess', 'Authentication::signInProcess');
+$routes->post('Authentication/signInProcessAdmin', 'Authentication::signInProcessAdmin');
+$routes->post('Authentication/signInProcessClient', 'Authentication::signInProcessClient');
