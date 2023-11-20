@@ -22,21 +22,34 @@ class MainModel extends Model
         return $query->get()->getResult();
     }
 
-    public function getProducts()
+    public function getProducts($categoryID = null)
     {
         $query = $this->db->table('products')
             ->select('*')
             ->where('status !=', '');
+        if (!empty($categoryID))
+            $query->where('categoryID', $categoryID);
 
         return $query->get()->getResult();
     }
 
-    public function getProductsByCategory($categoryID)
+    public function getBuyProducts($clientID)
     {
-        $query = $this->db->table('products')
-            ->select('*')
-            ->where('status !=', '')
-            ->where('categoryID', $categoryID);
+        $query = $this->db->table('shop')
+            ->select('
+            shop.id as shopID,
+            shop.productID,
+            shop.clientID,
+            shop.quantity,
+            products.id as productId,
+            products.name,
+            products.productID,
+            products.description,
+            products.price,
+            ')
+            ->join('products', 'products.id = shop.productID')
+            ->join('clients', 'clients.id = shop.clientID')
+            ->where('clientID', $clientID);
 
         return $query->get()->getResult();
     }
@@ -82,6 +95,16 @@ class MainModel extends Model
         return $this->resultID;
     }
 
+    public function objDeleteBy2Field($table, $field1, $value1, $field2, $value2)
+    {
+        $this->db->table($table)
+            ->where($field1, $value1)
+            ->where($field2, $value2)
+            ->delete();
+
+        return $this->resultID;
+    }
+
     public function objCheckDuplicate($table, $field, $value, $id = null)
     {
         $query = $this->db->table($table)
@@ -93,10 +116,14 @@ class MainModel extends Model
         return $query->get()->getResult();
     }
 
-    public function objDataByField($table, $field, $value)
+    public function objDataByField($table, $field1, $value1, $field2 = null, $value2 = null)
     {
         $query = $this->db->table($table)
-            ->where($field, $value);
+            ->where($field1, $value1);
+
+        if (!empty($field2) && !empty($value2)) {
+            $query->where($field2, $value2);
+        }
 
         return $query->get()->getResult();
     }

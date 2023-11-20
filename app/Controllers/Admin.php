@@ -299,4 +299,4 @@ class Admin extends BaseController
         return view('admin/header/index', $data);
     }
 }
-    //var_dump($data['user']);exit();
+    

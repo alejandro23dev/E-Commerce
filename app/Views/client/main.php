@@ -15,39 +15,30 @@
 <?php echo view('footer/footer'); ?>
 
 <script>
-    $('.categoryID-1').addClass('active');
-
-    getProductsByCategory('');
-
-    var notLogin = "<?php echo @$notLogin; ?>";
-
-    if (notLogin == 'yes') {
-        $('.loginRequired').attr('hidden', true);
-        $('.btn-buy').removeAttr('data-id');
-        $('.btn-buy').html('Iniciar Sesion');
-        $('.btn-buy').addClass('btn-login');
-        $('.btn-buy').removeClass('btn-buy');
-    }
-
-    $('.btn-login').on('click', function() {
-        $.ajax({
-            type: "post",
-            url: "<?php echo base_url('Client/showModalSignIn'); ?>",
-            dataType: "html",
-            success: function(response) {
-                $('#modal').html(response);
-            }
-        });
+    var companyName = "<?php echo COMPANY_NAME; ?>";
+    var typed = new Typed("#text", {
+        strings: ["Mejores Precios", "Mejores Descuentos", "Mejores Productos", "Y la Mejor Calidad solo con " + companyName],
+        typeSpeed: 200
     });
 
+    $('.categoryID-1').addClass('active');
 
-    function getProductsByCategory(id = '') {
-        var id = id;
+    getProducts();
+
+    $('.categoryNav').on('click', function() {
+        $('.categoryNav').removeClass('active');
+        $(this).addClass('active');
+        var categoryID = $(this).attr('data-id');
+        getProducts(categoryID);
+    });
+
+    function getProducts(categoryID = null, id = null) {
         $.ajax({
             type: "post",
-            url: "<?php echo base_url('Client/showProductsByCategory'); ?>",
+            url: "<?php echo base_url('Client/getProducts'); ?>",
             data: {
-                'id': id
+                'id': id,
+                'categoryID': categoryID,
             },
             dataType: "html",
             success: function(response) {
@@ -55,26 +46,4 @@
             }
         });
     }
-
-    $('.categoryNav').on('click', function() {
-        $('.categoryNav').removeClass('active');
-        $(this).addClass('active');
-
-        var id = $(this).attr('data-id');
-        getProductsByCategory(id);
-    });
-
-    $('.btn-buy').on('click', function() {
-        id = $(this).attr('data-id');
-        $.ajax({
-            type: "post",
-            url: "<? ?>",
-            data: "data",
-            dataType: "dataType",
-            success: function(response) {
-
-            }
-        });
-        console.log('añadir producto ' + id);
-    });
 </script>

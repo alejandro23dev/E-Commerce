@@ -13,15 +13,15 @@
                     <div class="card-body text-center pt-0">
                         <style>
                             .image-input-placeholder {
-                                background-image: url('assets/media/svg/files/blank-image.svg');
+                                background-image: url('');
                             }
 
                             [data-bs-theme="dark"] .image-input-placeholder {
-                                background-image: url('assets/media/svg/files/blank-image-dark.svg');
+                                background-image: url('');
                             }
                         </style>
                         <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true">
-                            <div class="image-input-wrapper w-150px h-150px"></div>
+                            <div id="file" class="image-input-wrapper w-150px h-150px"></div>
                             <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
                                 <i class="ki-duotone ki-pencil fs-7">
                                     <span class="path1"></span>
@@ -344,6 +344,7 @@
             })
         }
     });
+
 
     $('.number').on('input', function() { // Input Only Number
         jQuery(this).val(jQuery(this).val().replace(/[^0-9]/g, ''));

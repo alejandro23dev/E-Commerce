@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\MainModel;
+use App\Models\AuthenticationModel;
 
 class Client extends BaseController
 {
@@ -10,12 +11,14 @@ class Client extends BaseController
     protected $objSession;
     protected $objEmail;
     protected $objMainModel;
+    protected $objAuthenticationModel;
 
     public function __construct()
     {
         $this->objRequest = \Config\Services::request();
         $this->objSession = session();
         $this->objMainModel = new MainModel;
+        $this->objAuthenticationModel = new AuthenticationModel;
 
         $emailConfig = array();
         $emailConfig['protocol'] = EMAIL_PROTOCOL;
@@ -32,16 +35,32 @@ class Client extends BaseController
     public function index()
     {
         $data = array();
+        # Verify client Session
+        if (empty($this->objSession->get('user')['role']) || $this->objSession->get('user')['role'] != 'client') {
+            $data['user'] = '';
+        } else {
+            $data['user'] = $this->objMainModel->objDataByID('clients', $this->objSession->get('user')['id']);
+            $data['buyProducts'] = $this->objMainModel->getBuyProducts($this->objSession->get('user')['id']);
+        }
+
         $data['page'] = 'client/main';
         $data['categories'] = $this->objMainModel->objData('category');
         $data['products'] = $this->objMainModel->getProducts();
-        # Verify client Session
-        if (empty($this->objSession->get('user'))) {
-            $data['notLogin'] = 'yes';
-        } else {
-            $data['user'] = $this->objMainModel->objDataByID('clients', $this->objSession->get('user')['userID']);
-        }
+
+        //var_dump($data);exit();
+
         return view('client/header/index', $data);
+    }
+
+    public function logout()
+    {
+        # DESTROY SESSION
+        $sessionArray['id'] = '';
+        $sessionArray['user'] = '';
+        $sessionArray['email'] = '';
+        $sessionArray['role'] = '';
+
+        $this->objSession->set('user', $sessionArray);
     }
 
     public function showSignUp()
@@ -56,77 +75,25 @@ class Client extends BaseController
         return view('client/header/index', $data);
     }
 
-    public function registerUser()
+    public function getProducts()
     {
-        $userName = htmlspecialchars(trim($this->objRequest->getPost('userName')));
-        $email = htmlspecialchars(trim($this->objRequest->getPost('email')));
-        $password = password_hash(htmlspecialchars(trim($this->objRequest->getPost('password'))), PASSWORD_DEFAULT);
-        $token = md5(uniqid());
-
-        # Check Duplicate User
-        $checkUserName = $this->objMainModel->objCheckDuplicate('clients', 'user', $userName, '');
-        if (!empty($checkUserName)) {
-            $response['error'] = 1;
-            $response['msg'] = "DUPLICATE_USER_NAME";
-            return json_encode($response);
-        }
-
-        # Check Duplicate Email
-        $checkEmail = $this->objMainModel->objCheckDuplicate('clients', 'email', $email, '');
-        if (!empty($checkEmail)) {
-            $response['error'] = 1;
-            $response['msg'] = "DUPLICATE_EMAIL";
-            return json_encode($response);
-        }
-
-        $data = array();
-        $data['user'] = $userName;
-        $data['password'] = $password;
-        $data['email'] = $email;
-        $data['token'] = $token;
-
-        # Create User
-        $response = $this->objMainModel->objCreate('clients', $data);
-
-        # Sen Activate Status Email
-        /*$emailData = array();
-        $emailData['title'] = COMPANY_NAME;
-        $emailData['url'] = base_url('Authentication/confirmSignup') . '?token=' . $token;
-
-        $this->objEmail->setFrom(EMAIL_SMTP_USER, COMPANY_NAME);
-        $this->objEmail->setTo($email);
-        $this->objEmail->setSubject(COMPANY_NAME);
-        $this->objEmail->setMessage(view('email/mailSignup', $emailData), []);
-
-        if ($this->objEmail->send(false)) {
-            $response['error'] = 0;
-            $response['msg'] = 'SUCCESS_SEND_EMAIL';
-        } else {
-            $response['error'] = 1;
-            $response['msg'] = 'ERROR_SEND_EMAIL';
-        }*/
-
-        return json_encode($response);
-    } // ok
-
-    public function showProductsByCategory()
-    {
-
-        $categoryID = htmlspecialchars(trim($this->objRequest->getPost('id')));
-
         $data = array();
         # Verify client Session
-        if (empty($this->objSession->get('user'))) {
-            $data['notLogin'] = 'yes';
+        if (empty($this->objSession->get('user')['role']) || $this->objSession->get('user')['role'] != 'client') {
+            $data['user'] = '';
+        } else {
+            $data['user'] = $this->objMainModel->objDataByID('clients', $this->objSession->get('user')['id']);
+            $data['buyProducts'] = $this->objMainModel->getBuyProducts($this->objSession->get('user')['id']);
         }
+        $categoryID = $this->objRequest->getPost('categoryID');
+
         $data['categories'] = $this->objMainModel->objData('category');
         $data['categorySelected'] = $categoryID;
         if ($categoryID == 1 || empty($categoryID)) {
             $data['products'] = $this->objMainModel->getProducts();
         } else {
-            $data['products'] = $this->objMainModel->getProductsByCategory($categoryID);
+            $data['products'] = $this->objMainModel->getProducts($categoryID);
         }
-
 
         return view('products/main', $data);
     }
@@ -134,5 +101,52 @@ class Client extends BaseController
     public function showModalSignIn()
     {
         return view('client/modals/login');
+    }
+
+    public function addProductToShop()
+    {
+        # Verify client Session
+        if (empty($this->objSession->get('user')['role']) || $this->objSession->get('user')['role'] != 'client') {
+            $response['error'] = 3;
+            $response['msg'] = "SESSION_EXPIRED";
+            return json_encode($response);
+        }
+
+        $data = array();
+        $data['productID'] = $this->objRequest->getPost('productID');
+        $data['clientID'] = $this->objSession->get('user')['id'];
+        $data['quantity'] = 1;
+        $data['price'] = $this->objRequest->getPost('productPrice');
+
+        $response = $this->objMainModel->objCreate('shop', $data);
+        return json_encode($response);
+    }
+
+    public function removeProductToShop()
+    {
+        # Verify client Session
+        if (empty($this->objSession->get('user')['role']) || $this->objSession->get('user')['role'] != 'client') {
+            $response['error'] = 3;
+            $response['msg'] = "SESSION_EXPIRED";
+            return json_encode($response);
+        }
+        $productID = $this->objRequest->getPost('productID');
+
+        $response = $this->objMainModel->objDeleteBy2Field('shop', 'productID', $productID, 'clientID', $this->objSession->get('user')['id']);
+        return json_encode($response);
+    }
+
+    public function basket()
+    {
+        $data = array();
+        # Verify client Session
+        if (empty($this->objSession->get('user')['role']) || $this->objSession->get('user')['role'] != 'client') {
+            $data['user'] = '';
+        } else {
+            $data['user'] = $this->objMainModel->objDataByID('clients', $this->objSession->get('user')['id']);
+            $data['buyProducts'] = $this->objMainModel->getBuyProducts($this->objSession->get('user')['id']);
+        }
+
+        return view('client/modals/shop', $data);
     }
 }

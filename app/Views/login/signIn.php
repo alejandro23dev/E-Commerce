@@ -8,10 +8,10 @@
                             <h1 class="text-dark fw-bolder mb-3">Inicia Sesión</h1>
                         </div>
                         <div class="fv-row mb-8">
-                            <input type="text" placeholder="Username" class="form-control bg-transparent required focus" />
+                            <input type="text" id="user-login" placeholder="Username" class="form-control bg-transparent required focus" />
                         </div>
                         <div class="fv-row mb-3">
-                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent required focus" />
+                            <input type="password" id="password-login" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent required focus" />
                         </div>
                         <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
                             <div></div>
@@ -25,7 +25,7 @@
                             </button>
                         </div>
                         <div class="text-gray-500 text-center fw-semibold fs-6">No tienes cuenta?
-                            <a href="<?php echo base_url('Client/showSignUp');?>" class="link-primary">Crear una cuenta</a>
+                            <a href="<?php echo base_url('Client/showSignUp'); ?>" class="link-primary">Crear una cuenta</a>
                         </div>
                     </form>
                 </div>
@@ -43,21 +43,21 @@
         if (resultCheckRequiredValues == 0) {
             $.ajax({
                 type: "post",
-                url: "<?php echo base_url('Authentication/signInProcessAdmin'); ?>",
+                url: "<?php echo base_url('Authentication/signInProcessClient'); ?>",
                 data: {
-                    'user': $('#user').val(),
-                    'password': $('#password').val(),
+                    'user': $('#user-login').val(),
+                    'password': $('#password-login').val(),
                 },
                 dataType: "json",
                 success: function(response) {
                     switch (response.error) {
                         case 0:
-                            window.location.href = "<?php echo base_url('Admin/main'); ?>"
+                            window.location.href = "<?php echo base_url('/'); ?>";
                             break;
                         case 1:
                             if (response.msg == 'USER_NOT_FOUND') {
                                 $('#btn-login').removeAttr('disabled');
-                                $('#user').addClass('is-invalid');
+                                $('#user-login').addClass('is-invalid');
                                 Swal.fire({
                                     title: 'Usuario no encontrado',
                                     icon: 'error',
@@ -78,7 +78,7 @@
                             }
                             if (response.msg == 'INVALID_PASSWORD') {
                                 $('#btn-login').removeAttr('disabled');
-                                $('#password').addClass('is-invalid');
+                                $('#password-login').addClass('is-invalid');
                                 Swal.fire({
                                     title: 'Contraseña incorrecta',
                                     icon: 'error',

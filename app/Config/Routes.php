@@ -7,11 +7,17 @@ use CodeIgniter\Router\RouteCollection;
  */
 //CLIENT
 $routes->get('/', 'Client::index');
+$routes->post('/', 'Client::index');
+$routes->get('Authentication/signInClient', 'Authentication::signInClient');
 $routes->get('Client/showSignUp', 'Client::showSignUp');
 $routes->get('Client/showSignIn', 'Client::showSignIn');
 $routes->post('Client/registerUser', 'Client::registerUser');
-$routes->post('Client/showProductsByCategory', 'Client::showProductsByCategory');
+$routes->post('Client/getProducts', 'Client::getProducts');
 $routes->post('Client/showModalSignIn', 'Client::showModalSignIn');
+$routes->post('Client/addProductToShop', 'Client::addProductToShop'); 
+$routes->post('Client/removeProductToShop', 'Client::removeProductToShop');
+$routes->post('Client/basket', 'Client::basket');
+$routes->post('Client/logout', 'Client::logout');
 
 //ADMIN
 #GET
@@ -29,7 +35,7 @@ $routes->post('Admin/showViewModalCreateCategory', 'Admin::showViewModalCreateCa
 $routes->post('Admin/createCategory', 'Admin::createCategory');
 $routes->post('Admin/showViewModalCreateSubCategory', 'Admin::showViewModalCreateSubCategory');
 $routes->post('Admin/createSubCategory', 'Admin::createSubCategory');
-$routes->post('Admin/showViewCreateProduct', 'Admin::showViewCreateProduct'); 
+$routes->post('Admin/showViewCreateProduct', 'Admin::showViewCreateProduct');
 $routes->post('Admin/productActions', 'Admin::productActions');
 
 

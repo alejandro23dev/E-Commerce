@@ -44,64 +44,38 @@
                 success: function(response) {
                     switch (response.error) {
                         case 0:
-                            window.location.reload();
+                            $('#loginModal').modal('hide');
+                            simpleAlert('success', 'Bienvenido');
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
                             break;
                         case 1:
                             if (response.msg == 'USER_NOT_FOUND') {
                                 $('#btn-login-modal').removeAttr('disabled');
                                 $('#user-login-modal').addClass('is-invalid');
-                                Swal.fire({
-                                    title: 'Usuario no encontrado',
-                                    icon: 'error',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
+                                simpleAlert('warning', 'Rectifique las credenciales');
                             }
                             if (response.msg == 'STATUS') {
                                 $('#btn-login-modal').removeAttr('disabled');
-                                Swal.fire({
-                                    title: 'Primero debe de activar su cuenta',
-                                    icon: 'warning',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
+                                simpleAlert('warning', 'Active su cuenta antes de iniciar sesion');
                             }
                             if (response.msg == 'INVALID_PASSWORD') {
                                 $('#btn-login-modal').removeAttr('disabled');
                                 $('#password-login-modal').addClass('is-invalid');
-                                Swal.fire({
-                                    title: 'Contraseña incorrecta',
-                                    icon: 'error',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
+                                simpleAlert('warning', 'Contraseña incorrecta');
                             }
                             break;
                     }
                 },
                 error: function(error) {
                     $('#btn-login-modal').removeAttr('disabled');
-                    Swal.fire({
-                        title: 'Ha ocurrido un error',
-                        icon: 'error',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
+                    simpleAlert('error', 'Ha ocurrido un error');
                 }
             });
         } else {
             $('#btn-login-modal').removeAttr('disabled');
-            Swal.fire({
-                title: 'Complete la Información',
-                icon: 'warning',
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500
-            })
+            simpleAlert('warning', 'Introduzca sus credenciales');
         }
     });
 </script>

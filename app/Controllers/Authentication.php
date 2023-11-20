@@ -24,7 +24,7 @@ class Authentication extends BaseController
         $sessionArray['userID'] = '';
         $sessionArray['user'] = '';
         $sessionArray['email'] = '';
-        $sessionArray['rol'] = '';
+        $sessionArray['role'] = '';
 
         $this->objSession->set('user', $sessionArray);
 
@@ -40,10 +40,69 @@ class Authentication extends BaseController
         $this->objEmail = \Config\Services::email($emailConfig);
     }
 
+    public function registerUser()
+    {
+        $userName = htmlspecialchars(trim($this->objRequest->getPost('userName')));
+        $email = htmlspecialchars(trim($this->objRequest->getPost('email')));
+        $password = password_hash(htmlspecialchars(trim($this->objRequest->getPost('password'))), PASSWORD_DEFAULT);
+        $token = md5(uniqid());
+
+        # Check Duplicate User
+        $checkUserName = $this->objMainModel->objCheckDuplicate('clients', 'user', $userName, '');
+        if (!empty($checkUserName)) {
+            $response['error'] = 1;
+            $response['msg'] = "DUPLICATE_USER_NAME";
+            return json_encode($response);
+        }
+
+        # Check Duplicate Email
+        $checkEmail = $this->objMainModel->objCheckDuplicate('clients', 'email', $email, '');
+        if (!empty($checkEmail)) {
+            $response['error'] = 1;
+            $response['msg'] = "DUPLICATE_EMAIL";
+            return json_encode($response);
+        }
+
+        $data = array();
+        $data['user'] = $userName;
+        $data['password'] = $password;
+        $data['email'] = $email;
+        $data['token'] = $token;
+
+        # Create User
+        $response = $this->objMainModel->objCreate('clients', $data);
+
+        # Sen Activate Status Email
+        /*$emailData = array();
+        $emailData['title'] = COMPANY_NAME;
+        $emailData['url'] = base_url('Authentication/confirmSignup') . '?token=' . $token;
+
+        $this->objEmail->setFrom(EMAIL_SMTP_USER, COMPANY_NAME);
+        $this->objEmail->setTo($email);
+        $this->objEmail->setSubject(COMPANY_NAME);
+        $this->objEmail->setMessage(view('email/mailSignup', $emailData), []);
+
+        if ($this->objEmail->send(false)) {
+            $response['error'] = 0;
+            $response['msg'] = 'SUCCESS_SEND_EMAIL';
+        } else {
+            $response['error'] = 1;
+            $response['msg'] = 'ERROR_SEND_EMAIL';
+        }*/
+
+        return json_encode($response);
+    } 
+
     public function signInAdmin()
     {
         $data['page'] = 'admin/login/signIn';
         return view('admin/header/index', $data);
+    }
+
+    public function signInClient()
+    {
+        $data['page'] = 'login/signIn';
+        return view('client/header/index', $data);
     }
 
     public function signUpProcessClient()
@@ -133,22 +192,23 @@ class Authentication extends BaseController
         $password = htmlspecialchars(trim($this->objRequest->getPost('password')));
 
         $result = $this->objAuthenticationModel->login('clients', $user, $password);
+        //var_dump($result);exit();
 
-        if ($result['error'] == 1)
+        if ($result['error'] == 1) {
             return json_encode($result);
+        } else {
+            # CREATE SESSION
+            $sessionArray = array();
+            $sessionArray['id'] = $result['data']->id;
+            $sessionArray['user'] = $result['data']->user;
+            $sessionArray['email'] = $result['data']->email;
+            $sessionArray['role'] = $result['data']->role;
 
-        # CREATE SESSION
-        $sessionArray = array();
-        $sessionArray['userID'] = $result['data']->id;
-        $sessionArray['user'] = $result['data']->user;
-        $sessionArray['email'] = $result['data']->email;
-        $sessionArray['role'] = $result['data']->role;
+            $this->objSession->set('user', $sessionArray);
 
-        $this->objSession->set('user', $sessionArray);
-
-        $response = array();
-        $response['error'] = 0;
-
-        return json_encode($response);
+            $response = array();
+            $response['error'] = 0;
+            return json_encode($response);
+        }
     }
 }
