@@ -41,6 +41,7 @@ class MainModel extends Model
             shop.productID,
             shop.clientID,
             shop.quantity,
+            shop.price as shopPrice,
             products.id as productId,
             products.name,
             products.productID,

@@ -1,53 +1,7 @@
-<div class="bg-primary shadow p-2 rounded">
+<div class="bg-primary shadow p-8 rounded">
     <div class="navbar align-items-center">
-        <img src="<?php echo base_url('public/assets/media/avatars/300-1.jpg'); ?>" class="w-100px rounded-circle" alt="Imagen">
         <h1 class="text-white text-uppercase"><span id="text" class="fs-1 fw-bold fst-italic"></span></h1>
         <div class="app-navbar flex-shrink-0 justify-content-end loginRequired">
-            <div class="app-navbar-item align-items-stretch ms-1 ms-md-4">
-                <div id="kt_header_search" class="header-search d-flex align-items-stretch" data-kt-search-keypress="true" data-kt-search-min-length="2" data-kt-search-enter="enter" data-kt-search-layout="menu" data-kt-menu-trigger="auto" data-kt-menu-overflow="false" data-kt-menu-permanent="true" data-kt-menu-placement="bottom-end">
-                    <div class="d-flex align-items-center" data-kt-search-element="toggle" id="kt_header_search_toggle">
-                        <div class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px">
-                            <i class="ki-duotone ki-magnifier fs-2">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                        </div>
-                    </div>
-                    <div data-kt-search-element="content" class="menu menu-sub menu-sub-dropdown p-7 w-325px w-md-375px">
-                        <div data-kt-search-element="wrapper">
-                            <form data-kt-search-element="form" class="w-100 position-relative mb-3" autocomplete="off">
-                                <i class="ki-duotone ki-magnifier fs-2 text-gray-500 position-absolute top-50 translate-middle-y ms-0">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <input type="text" class="search-input form-control form-control-flush ps-10" name="search" value="" placeholder="Search..." data-kt-search-element="input" />
-                                <span class="search-spinner position-absolute top-50 end-0 translate-middle-y lh-0 d-none me-1" data-kt-search-element="spinner">
-                                    <span class="spinner-border h-15px w-15px align-middle text-gray-400"></span>
-                                </span>
-                                <span class="search-reset btn btn-flush btn-active-color-primary position-absolute top-50 end-0 translate-middle-y lh-0 d-none" data-kt-search-element="clear">
-                                    <i class="ki-duotone ki-cross fs-2 fs-lg-1 me-0">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </span>
-                            </form>
-                            <div data-kt-search-element="empty" class="text-center d-none">
-                                <div class="pt-10 pb-10">
-                                    <i class="ki-duotone ki-search-list fs-4x opacity-50">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                    </i>
-                                </div>
-                                <div class="pb-15 fw-semibold">
-                                    <h3 class="text-gray-600 fs-5 mb-2">No result found</h3>
-                                    <div class="text-muted fs-7">Please try again with a different query</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="app-navbar-item ms-1 ms-md-4" id="kt_header_user_menu_toggle">
                 <div class="cursor-pointer symbol symbol-35px" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
                     <img src="<?php echo base_url('public/assets/media/avatars/300-1.jpg'); ?>" class="rounded-3" alt="user" />
@@ -155,7 +109,7 @@
                             <!--end::Menu-->
                         </div>
                         <div class="menu-item px-5 my-1">
-                            <a href="../../demo1/dist/account/settings.html" class="menu-link px-5">Ajustes de mi cuenta</a>
+                            <a href="<?php echo base_url('Client/account'); ?>" class="menu-link px-5">Mi cuenta</a>
                         </div>
                         <div class="menu-item px-5">
                             <a href="#" id="btn-logout" class="menu-link px-5">Cerrar Sesion</a>
@@ -167,7 +121,14 @@
     </div>
 </div>
 
+
 <script>
+    var companyName = "<?php echo COMPANY_NAME; ?>";
+    var typed = new Typed("#text", {
+        strings: [companyName],
+        typeSpeed: 200
+    });
+
     $('#btn-logout').on('click', function(e) {
         e.preventDefault();
         $.ajax({

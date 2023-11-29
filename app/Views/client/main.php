@@ -10,17 +10,11 @@
     <?php endforeach; ?>
 </div>
 <!-- SECTION PRODUCTS CARDS -->
-<div id="main-products"></div>
+<div id="main-products" class="col-12"></div>
 <!-- SECTION FOOTER -->
 <?php echo view('footer/footer'); ?>
 
 <script>
-    var companyName = "<?php echo COMPANY_NAME; ?>";
-    var typed = new Typed("#text", {
-        strings: ["Mejores Precios", "Mejores Descuentos", "Mejores Productos", "Y la Mejor Calidad solo con " + companyName],
-        typeSpeed: 200
-    });
-
     $('.categoryID-1').addClass('active');
 
     getProducts();

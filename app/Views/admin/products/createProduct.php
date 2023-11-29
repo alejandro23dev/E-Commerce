@@ -146,11 +146,11 @@
                             </div>
                             <div class="text-center justify-content-around row">
                                 <?php if (@$edit) : ?>
-                                    <a href="<?php echo base_url('Admin/showViewProducts'); ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Descartar</a>
+                                    <a href="<?php echo base_url('Admin/showViewProducts'); ?>" class="btn btn-dark-50  shadow rounded col-12 col-lg-3 m-3">Descartar</a>
                                     <button type="button" id="btn-update" data-id="<?php echo @$product['id']; ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Actualizar Cambios</button>
                                 <?php else : ?>
-                                    <a href="<?php echo base_url('Admin/showViewProducts'); ?>" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Descartar</a>
-                                    <button type="button" id="btn-save" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Añadir Nuevo Producto</button>
+                                    <a href="<?php echo base_url('Admin/showViewProducts'); ?>" class="btn btn-dark-50 shadow rounded col-12 col-lg-3 m-3">Descartar</a>
+                                    <button type="button" id="btn-save" class="btn btn-primary shadow rounded col-12 col-lg-3 m-3">Guardar</button>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -297,10 +297,11 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             })
-                            setTimeout(function() {
-                                window.location.href = "<?php echo base_url('Admin/showViewProducts'); ?>";
-                            }, 2000);
-
+                            $('input').val('');
+                            $('select').val('');
+                            $('textarea').val('');
+                            $('.selection').val('');
+                            $('#btn-save').removeAttr('disabled');
                             break;
                         case 'INVALID_PRICE':
                             $('#productPrice').addClass('required is-invalid');

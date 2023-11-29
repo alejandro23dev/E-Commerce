@@ -102,7 +102,7 @@ define("EMAIL_SMTP_PORT","465");
 define("EMAIL_SMTP_CRYPTO","TLS");
 define("EMAIL_MAIL_TYPE","html"); 
 
-define("COMPANY_NAME","COMPANY NAME");
+define("COMPANY_NAME","E-Commerce");
 define("COMPANY_EMAIL","companyemail@example.com");
 define("COMPANY_PHONE","+1 (833) 597-7538");
 define("COMPANY_ADDRESS","2700 N. Macdill Ave, Suite: 211, Tampa, FL, 33607");

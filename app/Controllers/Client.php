@@ -136,17 +136,38 @@ class Client extends BaseController
         return json_encode($response);
     }
 
+    public function account()
+    {
+        $data = array();
+        # Verify client Session
+        if (empty($this->objSession->get('user')['role']) || $this->objSession->get('user')['role'] != 'client')
+            return view('logoutClient');
+        else {
+            $data['user'] = $this->objMainModel->objDataByID('clients', $this->objSession->get('user')['id']);
+            $data['buyProducts'] = $this->objMainModel->getBuyProducts($this->objSession->get('user')['id']);
+            $data['page'] = 'client/account/mainAccount';
+            return view('client/header/index', $data);
+        }
+    }
+
     public function basket()
+    {
+        return view('client/modals/shop');
+    }
+
+    public function getDtShop()
     {
         $data = array();
         # Verify client Session
         if (empty($this->objSession->get('user')['role']) || $this->objSession->get('user')['role'] != 'client') {
             $data['user'] = '';
         } else {
+            $data = array();
             $data['user'] = $this->objMainModel->objDataByID('clients', $this->objSession->get('user')['id']);
             $data['buyProducts'] = $this->objMainModel->getBuyProducts($this->objSession->get('user')['id']);
+           // var_dump($data['buyProducts']);exit();
         }
 
-        return view('client/modals/shop', $data);
+        return view('client/dataTables/dtShop', $data);
     }
 }

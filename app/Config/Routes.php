@@ -17,6 +17,8 @@ $routes->post('Client/showModalSignIn', 'Client::showModalSignIn');
 $routes->post('Client/addProductToShop', 'Client::addProductToShop'); 
 $routes->post('Client/removeProductToShop', 'Client::removeProductToShop');
 $routes->post('Client/basket', 'Client::basket');
+$routes->get('Client/getDtShop', 'Client::getDtShop');
+$routes->get('Client/account', 'Client::account');
 $routes->post('Client/logout', 'Client::logout');
 
 //ADMIN
